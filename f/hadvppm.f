@@ -10,6 +10,8 @@
       real fc1(mx1d),fc2(mx1d)
       parameter (TWO3RDS=2./3.)
 
+      real fm(MX1D),fp(MX1D),cm(MX1D),cl(MX1D),cr(MX1D),dc(MX1D), c6(MX1D)
+
       do i = 1,nn
         fm(i) = 0.
         fp(i) = 0.
