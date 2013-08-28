@@ -121,7 +121,7 @@ c-----Second order polynomial inside the domain
 c
       do i = 3,nn-2
 c
-c-----Compute average slope in the ith cell
+c-----Compute average slope in the i'th cell
 c
         dc(i) = 0.5*(con(i+1) - con(i-1))
 c      
