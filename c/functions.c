@@ -24,7 +24,26 @@
 */
 //function prototype
 void hadvppm(HADVPPM_ARGS){
+    //  
+    int i;
     double TWO3RGS = 2/3;
+    // BUFFER MATRICES
+    double fm[MX1D];
+    double fp[MX1D];
+    double cm[MX1D];
+    double cl[MX1D];
+    double cr[MX1D];
+    double dc[MX1D];
+    double c6[MX1D];
+    
+    for (i=0; i<nn; i++){ // Why nn?? The size of matrices fm, fp are MX1D
+        fm[i] = 0;
+        fp[i] = 0;
+        fc1[i] = 0;
+        fc2[i] = 0;
+    }
+    cm[2]  = con[2];
+    cm[nn] = con[nn-1]
     
     printf("hello");
 }
