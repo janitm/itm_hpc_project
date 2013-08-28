@@ -42,8 +42,18 @@ void hadvppm(HADVPPM_ARGS){
         fc1[i] = 0;
         fc2[i] = 0;
     }
-    cm[2]  = con[2];
-    cm[nn] = con[nn-1]
+    // Be caurfull: The matrices in C start by 0 while in Fortran by 1
+    cm[1]  = con[1];
+    cm[nn-1] = con[nn-2];  
+    cm[2] = (con[2] + con[1])/2;
+    cm[nn-2] = (con[nn-2] + con[nn-3])/2;
+    
+    for(i=3; i<nn-2; i++){
+        dc[i] = 0.5*(con[i+1] - con[i-1]);
+        if ((con[i+1] - con[i])*(con[i] - con[i-1]) > 0){
+                dc[i] = 
+        }
+    }
     
     printf("hello");
 }
