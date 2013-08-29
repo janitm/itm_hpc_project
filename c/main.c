@@ -8,6 +8,7 @@ int main(){
 	int i;
 	double dt = 0.1;
 	double dx = 0.1;
+    double step = dt/dx; // ToDo
 	double flux1 = 1;
 	double flux2 = 1;
 	double con[nn];
@@ -28,7 +29,7 @@ int main(){
 		fc2[i] = 1;
 
 		//note that hadvppm( &con[0] ) is the same as hadvppm( con )
-        hadvppm(nn, dt, dx, con, vel, mscl, flxarr, &flux1, &flux2, saflux, fc1, fc2);
+        hadvppm(nn, step, con, vel, mscl, flxarr, &flux1, &flux2, saflux, fc1, fc2);
         }
 
 	return 0;

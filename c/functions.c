@@ -26,7 +26,7 @@ void hadvppm(HADVPPM_ARGS){
     double Conp;
     double Conm;
     double x;
-    double step = dt/dx; // ToDo
+    double step = dt/dx;
 
     //DUMMY VARIABLES
 
@@ -91,35 +91,35 @@ void hadvppm(HADVPPM_ARGS){
     }
 
     for(i=2;i<nn-1;i++){
-		x = fmax(0,-vel[i-1]*(dt/dx));
+		x = fmax(0,-vel[i-1]*step);
 		fm[i] = x*(cl[i] + 0.5*x*(dc[i] + c6[i]*(1.0 - TWO3RDS*x)));
         if (x >= 1)
 			printf("Courant number %f is bigger than 1", x);
-		x = fmax(0,vel[i-1]*(dt/dx)); // ToDo: maybe this is not necessary
+		x = fmax(0,vel[i-1]*step); // ToDo: maybe this is not necessary
 		if (x >= 1)
 			printf("Courant number %f is bigger than 1", x);
         fp[i] = x*(cr[i] - 0.5*x*(dc[i] - c6[i]*(1.0 - TWO3RDS*x)));
 	}
 
 	if (vel[1] > 0){
-		x = vel[1]*(dt/dx);
+		x = vel[1]*step;
         fp[1] = x*con[1];
 	}
 
 	if (vel[nn-1] > 0){
-		x = -vel[nn-1]*(dt/dx);
+		x = -vel[nn-1]*step;
         fp[nn] = x*con[nn];
 	}
 
-	flxarr[1] = (fp[1] - fm[2])*(dx/dt);
-	saflux[1] = flxarr[1]*(dt/dx);
+	flxarr[1] = (fp[1] - fm[2])*step;
+	saflux[1] = flxarr[1]*step;
 
 	for (i=1; i<nn-1; i++){
 		flxarr[i] = (fp[i] - fm[i+1])*(dx/dt);
-		con[i] = con[i] - mscl[i]*(flxarr[i] - flxarr[i-1])*(dt/dx);
-        saflux[i] = flxarr[i]*(dt/dx);
-        fc1[i] =   mscl[i]*flxarr[i-1]*(dt/dx);
-        fc2[i] = - mscl[i]*flxarr[i]*(dt/dx);
+		con[i] = con[i] - mscl[i]*(flxarr[i] - flxarr[i-1])*step;
+        saflux[i] = flxarr[i]*(step);
+        fc1[i] =   mscl[i]*flxarr[i-1]*step;
+        fc2[i] = - mscl[i]*flxarr[i]*step;
 	}
 
 	*flux1 = mscl[2]*flxarr[1];
