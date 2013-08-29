@@ -1,3 +1,9 @@
+/*****
+ *
+ *  header.h
+ *
+ **/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -5,7 +11,7 @@
 
 //arguments to function hadvppm
 #define HADVPPM_ARGS int nn, double step, double con[], double vel[], double mscl[], double flxarr[], double* flux1, double* flux2, double saflux[], double fc1[], double fc2[]
-
+#define MNRATIO_ARGS // TODO
 #define DEBUG 0
 
 // DO NOT CHANGE

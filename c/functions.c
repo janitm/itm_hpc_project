@@ -26,11 +26,15 @@ void hadvppm(HADVPPM_ARGS){
     double Conp;
     double Conm;
     double x;
-    double step = dt/dx;
 
     //DUMMY VARIABLES
+<<<<<<< HEAD
     //MX1D is the same as nn, this is done to keep memory aligned in Fortran
     int MX1D = 1;
+=======
+
+    int MX1D = nn;
+>>>>>>> change to fortran files (with and without comments).
 
     // BUFFER MATRICES
     double fm[MX1D];
@@ -127,4 +131,42 @@ void hadvppm(HADVPPM_ARGS){
 
     printf("hello");
 }
+
+/* We don't need it .....
+
+void mnratio(MNRATIO_ARGS){
+	int ii;
+	int i;
+	int spec;
+	int j;
+	int k;
+	int flag; // 1 => x-advection, 2 => y-advection
+	int order[nspc];
+	double c1d[MX1D];
+	double c2d[MX1D];
+	double mn[MX1D];
+	double eps = 1.0e-20;
+
+	if (ii>=ngas){
+		spec = (ii-ngas)%naero;
+		if (spec == 1){
+			int l = 0;
+			for (i=i1; i<i2; i++){
+				l = l + 1;
+				c2d[l] = c1d[l];
+				if (c2d[l] <= 0){
+					if (c2d[l] > -eps){
+						c2d[l] = eps;
+					} else {
+						printf("In mnratio, number concentrations are less than -eps\n");
+						printf("Species = %f\n", spname(order(ii));
+						printf("In mnratio, number concentrations are less than -eps");
+					}
+				}
+			}
+		}
+	}
+
+}
+*/
 
