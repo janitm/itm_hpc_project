@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+//#include <openmp.h> //is this the correct compiler directive?
 #include "functions.c"
 
 //arguments to function hadvppm
@@ -15,7 +16,6 @@
 #define DEBUG 0
 
 // DO NOT CHANGE
-#define MX1D 97
 #define PI 3.141592653589793238462643383
 
 // Prototype

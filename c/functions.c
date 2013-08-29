@@ -1,5 +1,4 @@
-//#include<openmp.h> //is this the correct compiler directive?
-
+#include "header.h"
 //this is a fucked up keyboard
 /*
         Input arguments:
@@ -28,13 +27,8 @@ void hadvppm(HADVPPM_ARGS){
     double x;
 
     //DUMMY VARIABLES
-<<<<<<< HEAD
     //MX1D is the same as nn, this is done to keep memory aligned in Fortran
-    int MX1D = 1;
-=======
-
     int MX1D = nn;
->>>>>>> change to fortran files (with and without comments).
 
     // BUFFER MATRICES
     double fm[MX1D];
@@ -119,7 +113,7 @@ void hadvppm(HADVPPM_ARGS){
 	saflux[1] = flxarr[1]*step;
 
 	for (i=1; i<nn-1; i++){
-		flxarr[i] = (fp[i] - fm[i+1])*(dx/dt);
+		flxarr[i] = (fp[i] - fm[i+1])*step;
 		con[i] = con[i] - mscl[i]*(flxarr[i] - flxarr[i-1])*step;
         saflux[i] = flxarr[i]*(step);
         fc1[i] =   mscl[i]*flxarr[i-1]*step;
