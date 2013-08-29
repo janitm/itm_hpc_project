@@ -29,7 +29,7 @@ void hadvppm(HADVPPM_ARGS){
     double step = dt/dx;
 
     //DUMMY VARIABLES
-
+    //MX1D is the same as nn, this is done to keep memory aligned in Fortran
     int MX1D = 1;
 
     // BUFFER MATRICES

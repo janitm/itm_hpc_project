@@ -1,4 +1,4 @@
-#  Makefile for After post-processing programs
+# Makefile for After post-processing programs
 #
 #  Modified by Ben Murphy - 3/11/08
 #
@@ -39,9 +39,16 @@
 
 
 
-FC = pgf77
+FC = pgf90
 
-FLGS = -g -tp p6 -pc 64 -Kieee -Mdalign -Mextend -Mnoframe -byteswapio -Wl,-Bstatic -Minfo
+
+#FLGS = -g -tp p6 -pc 64 -Kieee -Mdalign -Mextend -Mnoframe -byteswapio -Wl,-Bstatic -Minfo
+#note: it is not sensible to use -wl,-Bstatic, since this links everything statically and
+#and that means that the libraries need to be in the correct order
+
+#second note: the -tp p6 flag is really important, but the default is actually pretty sensible
+
+FLGS = -g -pc 64 -Kieee -Mdalign -Mextend -Mnoframe -byteswapio  -Minfo
 
 runme: runme.f hadvppm.f
 	$(FC) $(FLGS) -c runme.f hadvppm.f

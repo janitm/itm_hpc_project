@@ -6,7 +6,7 @@ c
 c
       integer nn
       parameter(nn=90)  !Length of Dimension
-      real c1d(nn), v1d(nn), im1d(nn), dt, dx
+      real c1d(nn), v1d(nn), cinit(nn), m1d(nn), dt, dx
       real flxarr(nn), flux1, flux2
       integer ii
 

@@ -9,10 +9,10 @@ int main(){
 	double dt = 0.1;
 	double dx = 0.1;
     double step = dt/dx; // ToDo
-	double flux1 = 1;
-	double flux2 = 1;
+	double flux1 = 0; //fluxes at the boundaries output from the subroutine
+	double flux2 = 0;
 	double con[nn];
-	double vel[nn];
+	double vel[nn]; //wind reactor
 	double mscl[nn];
 	double flxarr[nn];
 	double saflux[nn];
@@ -21,12 +21,13 @@ int main(){
 
 	for(i=0; i<nn; i++){
 		con[i] = sin(2.0/(double)nn * PI * (double)i);
-		vel[i] = 0.5;
-		mscl[i] = 1;
-		flxarr[i] = 1;
-		saflux[i] = 1;
-		fc1[i] = 1;
-		fc2[i] = 1;
+		vel[i] = 0.5; //fine by Ben -> later it should vary accross the dimension, can vary magnitude and sign
+		mscl[i] = 1; //map scale vector, just leave it as 1
+		//everthying below this is output
+		flxarr[i] = 0; //that is output from
+		saflux[i] = 0; //most meaningless but output
+		fc1[i] = 0; //even more meaningless
+		fc2[i] = 0;
 	}
 	//note that hadvppm( &con[0] ) is the same as hadvppm( con )
     hadvppm(nn, step, con, vel, mscl, flxarr, &flux1, &flux2, saflux, fc1, fc2);
