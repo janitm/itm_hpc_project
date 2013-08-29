@@ -1,9 +1,6 @@
 //#include<openmp.h> //is this the correct compiler directive?
 
 //this is a fucked up keyboard
-
-//arguments to function hadvppm
-#define HADVPPM_ARGS int nn, double dt, double dx, double con[], double vel[], double mscl[], double flxarr[], double* flux1, double* flux2, double saflux[], double fc1[], double fc2[]
 /*
         Input arguments:
         nn                  Number of cells
