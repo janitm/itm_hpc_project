@@ -30,6 +30,11 @@ void hadvppm(HADVPPM_ARGS){
     double Conm;
     double x;
     double step = dt/dx; // ToDo
+
+    //DUMMY VARIABLES
+
+    int MX1D = 1;
+
     // BUFFER MATRICES
     double fm[MX1D];
     double fp[MX1D];

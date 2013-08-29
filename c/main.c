@@ -27,8 +27,9 @@ int main(){
 		fc1[i] = 1;
 		fc2[i] = 1;
 
-		hadvppm(nn, dt, dx, con[], vel[], mscl[], flxarr[], &flux1, &flux2, saflux[], fc1[], fc2[]);
-	}
+		//note that hadvppm( &con[0] ) is the same as hadvppm( con )
+        hadvppm(nn, dt, dx, con, vel, mscl, flxarr, &flux1, &flux2, saflux, fc1, fc2);
+        }
 
 	return 0;
 }
