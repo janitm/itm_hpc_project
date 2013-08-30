@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Itm hpc project by SebastianArnoldt</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Itm hpc project</h1>
+        <p>itm hpc project</p>
+
+        <p class="view"><a href="https://github.com/SebastianArnoldt/itm_hpc_project">View the Project on GitHub <small>SebastianArnoldt/itm_hpc_project</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/SebastianArnoldt/itm_hpc_project/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/SebastianArnoldt/itm_hpc_project/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/SebastianArnoldt/itm_hpc_project">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>This project aims to improve an isolated serial advection subroutine in the above mentioned climate model code, which is used at the Department of Applied Environmental Science (itm) at Stockholm University. The first step is to port the isolated subroutine from the currently existing Fortran 77 version to C. Aside from simple optimizations in advection routine, such as replacing repetitions of expensive computations and testing optimization flags of compilers, we plan to optimize the nested for loop structure of the code with OpenMP. Further optimizations we want to try are for loop-unrolling and increasing the throughput with SIMD instructions. Due to the physics of the model, there exist a lot of data-dependencies in the code, which will make it difficult to implement MPI. Moreover, the model is run on several different architectures. Nevertheless, we will keep an open mind about MPI and try to implement it if we think that it is feasible.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/SebastianArnoldt">SebastianArnoldt</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
