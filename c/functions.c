@@ -5,6 +5,7 @@
         nn                  Number of cells
         dt                  Time step (s)
         dx                  Length of cell (m)
+        step 				dx/dt
         con                 Concentration*area vector (umol/m)
         vel                 Wind speed vector (m/s)
         mscl                Map-scale factor (squared) at cell centroid vector
@@ -17,7 +18,7 @@
                              (1=west/south, 2=east/north)
                              (used for Process Analysis)
 */
-//function prototype
+
 void hadvppm(HADVPPM_ARGS){
     //
     int i;
@@ -26,20 +27,16 @@ void hadvppm(HADVPPM_ARGS){
     double Conm;
     double x;
 
-    //DUMMY VARIABLES
-    //MX1D is the same as nn, this is done to keep memory aligned in Fortran
-    int MX1D = nn;
-
     // BUFFER MATRICES
-    double fm[MX1D];
-    double fp[MX1D];
-    double cm[MX1D];
-    double cl[MX1D];
-    double cr[MX1D];
-    double dc[MX1D];
-    double c6[MX1D];
+    double fm[nn];
+    double fp[nn];
+    double cm[nn];
+    double cl[nn];
+    double cr[nn];
+    double dc[nn];
+    double c6[nn];
 
-    for (i=0; i<nn; i++){ // Why nn?? The size of matrices fm, fp are MX1D
+    for (i=0; i<nn; i++){
         fm[i] = 0;
         fp[i] = 0;
         fc1[i] = 0;
@@ -56,16 +53,18 @@ void hadvppm(HADVPPM_ARGS){
         Conp = con[i+1] - con[i];
         Conm = con[i] - con[i-1];
         if ((Conp)*(Conm) > 0){
-            dc[i] = copysign(1,dc[i]) * fmin(abs(dc[i]),fmin(2.0*abs(Conp),2.0*abs(Conm))); // sign ?????
+            dc[i] = copysign(1,dc[i]) * fmin(abs(dc[i]),fmin(2.0*abs(Conp),2.0*abs(Conm)));
         } else {
 			dc[i] = 0;
         }
+        if (i != 3)
+			cm[i] = con[i-1] + 0.5*(con[i] - con[i-1]) + (dc[i-1] - dc[i])/6.0;
     }
-
+/*
     for(i=3; i<nn-3; i++){ // ToDo: Merge this for-loop with the previous
 		cm[i+1] = con[i] + 0.5*(con[i+1] - con[i]) + (dc[i] - dc[i+1])/6.0;
     }
-
+*/
     for(i=2; i<nn-1; i++){
         cr[i] = cm[i+1];
         cl[i] = cm[i];
@@ -136,9 +135,9 @@ void mnratio(MNRATIO_ARGS){
 	int k;
 	int flag; // 1 => x-advection, 2 => y-advection
 	int order[nspc];
-	double c1d[MX1D];
-	double c2d[MX1D];
-	double mn[MX1D];
+	double c1d[nn];
+	double c2d[nn];
+	double mn[nn];
 	double eps = 1.0e-20;
 
 	if (ii>=ngas){
