@@ -17,7 +17,15 @@
         fc1-2               Conc*area vector change from flux (umol/m)
                              (1=west/south, 2=east/north)
                              (used for Process Analysis)
+
+		Output arguments:
+        con
+        flxarr
+        flux1-2
+		saflux
+
 */
+
 
 void hadvppm(HADVPPM_ARGS){
     //
@@ -122,7 +130,14 @@ void hadvppm(HADVPPM_ARGS){
 	*flux1 = mscl[2]*flxarr[1];
     *flux2 = mscl[nn-1]*flxarr[nn-1];
 
-    printf("hello");
+    // test: print output arguments
+    printf("the Flux1:%f\n", flux1);
+    printf("the Flux2:%f\n", flux2);
+    printf("flxarr		saflux		fc1		fc2		con\n");
+    for (i = 0; i<nn; i++){
+		printf("%.4f		%.4f		%.4f		%.4f	%.4f\n", flxarr[i], saflux[i], fc1[i], fc2[i], con[i]);
+    }
+    printf("\n END\n");
 }
 
 /* We don't need it .....
