@@ -1,7 +1,6 @@
 
-
 main: main.c
-	gcc -g -o IHPC main.c -leng -lmx
+	gcc -g -o IHPC main.c function.c -leng -lmx
 
 IHPC: main
 
