@@ -8,7 +8,6 @@ int main(){
 	int i;
 	double dt = 900;
 	double dx = 36000;
-    double step = dt/dx; // ToDo
 	double flux1 = 0; //fluxes at the boundaries output from the subroutine
 	double flux2 = 0;
 	double con[nn];
@@ -30,7 +29,7 @@ int main(){
 		fc2[i] = 0;
 	}
 	//note that hadvppm( &con[0] ) is the same as hadvppm( con )
-    hadvppm(nn, step, con, vel, mscl, flxarr, &flux1, &flux2, saflux, fc1, fc2);
+    hadvppm(nn, dx, dt, con, vel, mscl, flxarr, &flux1, &flux2, saflux, fc1, fc2);
 
 	return 0;
 }
