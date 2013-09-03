@@ -11,7 +11,7 @@
 //#include <openmp.h> //is this the correct compiler directive?
 
 //arguments to function hadvppm
-#define HADVPPM_ARGS int nn, double step, double con[], double vel[], double mscl[], double flxarr[], double* flux1, double* flux2, double saflux[], double fc1[], double fc2[]
+#define HADVPPM_ARGS int nn, double dx, double dt, double con[], double vel[], double mscl[], double flxarr[], double* flux1, double* flux2
 #define MNRATIO_ARGS // TODO
 #define DEBUG 0
 
