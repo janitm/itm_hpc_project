@@ -4,10 +4,10 @@
 
 int main(){
 
-	int nn = 30;
+	int nn = 90;
 	int i;
-	double dt = 0.1;
-	double dx = 0.1;
+	double dt = 900;
+	double dx = 36000;
     double step = dt/dx; // ToDo
 	double flux1 = 0; //fluxes at the boundaries output from the subroutine
 	double flux2 = 0;
