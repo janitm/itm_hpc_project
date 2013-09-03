@@ -34,7 +34,7 @@ int main(){
 	}
 	//note that hadvppm( &con[0] ) is the same as hadvppm( con )
 	printf("Call hadvppm ... ");
-    hadvppm(nn, step, con, vel, mscl, flxarr, &flux1, &flux2, saflux, fc1, fc2);
+    hadvppm(nn, step, con, vel, mscl, flxarr, &flux1, &flux2);
 	flxarr[nn] = 0.0;
 
 	// save the data
@@ -95,6 +95,9 @@ void hadvppm(HADVPPM_ARGS){
     // BUFFER MATRICES
     double fm[nn];
     double fp[nn];
+    double fc1[nn];
+    double fc2[nn];
+    double saflux[nn];
     double cm[nn];
     double cl[nn];
     double cr[nn];
