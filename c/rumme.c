@@ -4,11 +4,10 @@
 
 int main(){
 
-	int nn = 90;
+	int nn = 5;
 	int i;
 	double dt = 900;
 	double dx = 36000;
-    double step = dt/dx; // ToDo
 	double flux1 = 0; //fluxes at the boundaries output from the subroutine
 	double flux2 = 0;
 	double con[nn];
@@ -33,8 +32,8 @@ int main(){
 		//fc2[i] = 0;
 	}
 	//note that hadvppm( &con[0] ) is the same as hadvppm( con )
-	printf("Call hadvppm ... ");
-    hadvppm(nn, step, con, vel, mscl, flxarr, &flux1, &flux2);
+	printf("Call hadvppm ... \n");
+    hadvppm(nn, dx, dt, con, vel, mscl, flxarr, &flux1, &flux2);
 	flxarr[nn] = 0.0;
 
 	// save the data
@@ -95,9 +94,9 @@ void hadvppm(HADVPPM_ARGS){
     // BUFFER MATRICES
     double fm[nn];
     double fp[nn];
-    double fc1[nn];
-    double fc2[nn];
-    double saflux[nn];
+    //double fc1[nn];
+    //double fc2[nn];
+    //double saflux[nn];
     double cm[nn];
     double cl[nn];
     double cr[nn];
@@ -107,8 +106,13 @@ void hadvppm(HADVPPM_ARGS){
     for (i=0; i<nn; i++){
         fm[i] = 0;
         fp[i] = 0;
-        fc1[i] = 0;
-        fc2[i] = 0;
+        cm[i] = 0;
+        cl[i] = 0;
+        cr[i] = 0;
+        dc[i] = 0;
+        c6[i] = 0;
+        //fc1[i] = 0;
+        //fc2[i] = 0;
     }
     // Be caurfull: The matrices in C start by 0 while in Fortran by 1
     cm[1]  = con[1];
@@ -116,7 +120,7 @@ void hadvppm(HADVPPM_ARGS){
     cm[2] = (con[2] + con[1])/2;
     cm[nn-2] = (con[nn-2] + con[nn-3])/2;
 
-    for(i=3; i<nn-2; i++){
+    for(i=2; i<nn-2; i++){
         dc[i] = 0.5*(con[i+1] - con[i-1]);
         Conp = con[i+1] - con[i];
         Conm = con[i] - con[i-1];
@@ -125,20 +129,20 @@ void hadvppm(HADVPPM_ARGS){
         } else {
 			dc[i] = 0;
         }
-        if (i != 3)
+        /*if (i != 3)
 			cm[i] = con[i-1] + 0.5*(con[i] - con[i-1]) + (dc[i-1] - dc[i])/6.0;
-    }
-/*
-    for(i=3; i<nn-3; i++){ // ToDo: Merge this for-loop with the previous
+  */}
+
+    for(i=2; i<nn-3; i++){ // ToDo: Merge this for-loop with the previous
 		cm[i+1] = con[i] + 0.5*(con[i+1] - con[i]) + (dc[i] - dc[i+1])/6.0;
     }
-*/
-    for(i=2; i<nn-1; i++){
+
+    for(i=1; i<nn-1; i++){
         cr[i] = cm[i+1];
         cl[i] = cm[i];
     }
 
-    for(i=2; i<nn-1; i++){
+    for(i=1; i<nn-1; i++){
     	if ((cr[i] - con[i])*(con[i] - cl[i])>0) {
 			dc[i] = cr[i] - cl[i];
 			c6[i] = 6.0*(con[i] - 0.5*(cl[i] + cr[i]));
@@ -155,47 +159,57 @@ void hadvppm(HADVPPM_ARGS){
         c6[i] = 6.0*(con[i] - 0.5*(cl[i] + cr[i]));
     }
 
-    for(i=2;i<nn-1;i++){
-		x = fmax(0,-vel[i-1]*step);
+    for(i=1; i<nn-1; i++){
+		x = fmax(0,-vel[i-1]*(dt/dx));
+		//printf("[%d]I AM x1: %f\n",i,x);
 		fm[i] = x*(cl[i] + 0.5*x*(dc[i] + c6[i]*(1.0 - TWO3RDS*x)));
-        if (x >= 1)
-			printf("Courant number %f is bigger than 1", x);
-		x = fmax(0,vel[i-1]*step); // ToDo: maybe this is not necessary
-		if (x >= 1)
-			printf("Courant number %f is bigger than 1", x);
+        //if (x >= 1)
+			//printf("Courant number %f is bigger than 1", x);
+		x = fmax(0,vel[i]*(dt/dx)); // ToDo: maybe this is not necessary
+		//printf("[%d]I AM x2: %f\n",i,x);
+		//if (x >= 1)
+			//printf("Courant number %f is bigger than 1", x);
         fp[i] = x*(cr[i] - 0.5*x*(dc[i] - c6[i]*(1.0 - TWO3RDS*x)));
 	}
 
-	if (vel[1] > 0){
-		x = vel[1]*step;
-        fp[1] = x*con[1];
+	if (vel[0] > 0){
+		x = vel[0]*(dt/dx);
+        fp[0] = x*con[0];
 	}
 
-	if (vel[nn-1] > 0){
-		x = -vel[nn-1]*step;
-        fp[nn] = x*con[nn];
+	if (vel[nn-2] < 0){
+		x = -vel[nn-2]*(dt/dx);
+        fp[nn-1] = x*con[nn-1];
 	}
 
-	flxarr[1] = (fp[1] - fm[2])*step;
-	saflux[1] = flxarr[1]*step;
+	flxarr[0] = (fp[0] - fm[1])*(dx/dt);
+	printf("flxarr:%f, fp0:%f, fm1:%f \n", flxarr[0], fp[0], fm[1]);
+
+	//saflux[0] = flxarr[0]*step;
 
 	for (i=1; i<nn-1; i++){
-		flxarr[i] = (fp[i] - fm[i+1])*step;
-		con[i] = con[i] - mscl[i]*(flxarr[i] - flxarr[i-1])*step;
-        saflux[i] = flxarr[i]*(step);
-        fc1[i] =   mscl[i]*flxarr[i-1]*step;
-        fc2[i] = - mscl[i]*flxarr[i]*step;
+		printf("[%d]", i);
+		flxarr[i] = (fp[i] - fm[i+1])*(dx/dt);
+		con[i] = con[i] - mscl[i]*(flxarr[i] - flxarr[i-1])*(dt/dx);
 	}
 
-	*flux1 = mscl[2]*flxarr[1];
-    *flux2 = mscl[nn-1]*flxarr[nn-1];
+	*flux1 = mscl[1]*flxarr[0];
+    *flux2 = mscl[nn-2]*flxarr[nn-2];
+    printf("mscl\n");
+    for (i = 0; i<nn; i++){
+		printf("%.4f\n", mscl[i]);
+    }
 
     // test: print output arguments
     printf("the Flux1:%f\n", flux1);
     printf("the Flux2:%f\n", flux2);
-    printf("flxarr		saflux		fc1		fc2		con\n");
+    printf("flxarr		con		   fm		fp\n");
     for (i = 0; i<nn; i++){
-		printf("%.4f		%.4f		%.4f		%.4f	%.4f\n", flxarr[i], saflux[i], fc1[i], fc2[i], con[i]);
+		printf("%.4f		%.4f		%.4f		%.4f\n", flxarr[i],  con[i], fm[i], fp[i]);
+    }
+    printf("cm		cl		cr		dc		c6\n");
+    for (i = 0; i<nn; i++){
+		printf("%.4f		%.4f		%.4f		%.4f		%.4f\n", cm[i], cl[i], cr[i], dc[i], c6[i]);
     }
     printf("\n END\n");
 }
