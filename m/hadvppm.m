@@ -1,4 +1,4 @@
-function [con, flux1, flux2, flxarr, fm, fp, cm, cl, cr, dc, c6] = hadvppm( nn, dt, dx, con, vel, mscl, flxarr, flux1, flux2 )
+function [con, flxarr, flux1, flux2] = hadvppm( nn, dt, dx, con, vel, mscl, flxarr, flux1, flux2 )
 
 %      include "camx.prm"
 %      real con(nn),vel(nn),flxarr(nn),mscl(nn),saflux(nn)
