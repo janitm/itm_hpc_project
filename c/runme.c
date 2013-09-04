@@ -3,15 +3,15 @@
 #include "header.h"
 
 int main(){
-
-	int nn = 5;
+	//printf("***************** START");
+	int nn = 90;
 	int i;
-	double dt = 900;
+	double dt = 1.0;
 	double dx = 36000;
 	double flux1 = 0; //fluxes at the boundaries output from the subroutine
 	double flux2 = 0;
 	double con[nn];
-	double cinit[nn];
+	double coninit[nn];
 	double vel[nn]; //wind reactor
 	double mscl[nn];
 	double flxarr[nn];
@@ -19,11 +19,12 @@ int main(){
 	double saflux[nn];
 	double fc1[nn];
 	double fc2[nn];
+	double sigma = 1;
 
 	for(i=0; i<nn; i++){
-		con[i] = 1.0; //Concentration (micrograms / m3)
-		cinit[i] = con[i];
-		vel[i] = 0.5; //fine by Ben -> later it should vary accross the dimension, can vary magnitude and sign
+		coninit[i] = exp ((-(i-9)*(i-9))/(2*sigma*sigma));
+		con[i] = coninit[i]; //Concentration (micrograms / m3)
+		vel[i] = 150; //fine by Ben -> later it should vary accross the dimension, can vary magnitude and sign
 		mscl[i] = 1; //map scale vector, just leave it as 1
 		//everthying below this is output
 		flxarr[i] = 0; //that is output from
@@ -31,21 +32,45 @@ int main(){
 		//fc1[i] = 0; //even more meaningless
 		//fc2[i] = 0;
 	}
-	//note that hadvppm( &con[0] ) is the same as hadvppm( con )
-	printf("Call hadvppm ... \n");
-    hadvppm(nn, dx, dt, con, vel, mscl, flxarr, &flux1, &flux2);
-	flxarr[nn] = 0.0;
+	for (i=0; i<20000; i++){
+#if (DEBUG == 1)
+		printf("[%d] Call hadvppm ... \n",i);
+#endif
+		//printf("con defore:%p\n",con);
+		//note that hadvppm( &con[0] ) is the same as hadvppm( con )
+		hadvppm(nn, dx, dt, con, vel, mscl, flxarr, &flux1, &flux2);
+		//printf("con after:%p\n",con);
+	}
 
-	// save the data
+	//flxarr[nn] = 0.0;
+/*
+	// save the data txt
 	FILE * file01 = fopen("stepi.txt", "w");
-	FILE * file02 = fopen("cinit.txt", "w");
-	FILE * file03 = fopen("con.txt", "w");
+	FILE * file02 = fopen("coninit.txt", "w");
+	FILE * file03 = fopen("conend.txt", "w");
 	FILE * file04 = fopen("flxarr.txt", "w");
 	for (i=0; i<nn; i++){
 		fprintf(file01, "%d\n", i);
-		fprintf(file02, "%.4f\n", cinit[i]);
-		fprintf(file03, "%.4f\n",con[i]);
-		fprintf(file04, "%.4f\n",flxarr[i]);
+		fprintf(file02, "%.40f\n", coninit[i]);
+		fprintf(file03, "%.40f\n", con[i]);
+		fprintf(file04, "%.40f\n", flxarr[i]);
+	}
+	fclose(file01);
+	fclose(file02);
+	fclose(file03);
+	fclose(file04);
+*/
+
+	// save the data vtk paraview
+	FILE * file01 = fopen("stepi.vtk", "w");
+	FILE * file02 = fopen("coninit.vtk", "w");
+	FILE * file03 = fopen("conend.vtk", "w");
+	FILE * file04 = fopen("flxarr.vtk", "w");
+	for (i=0; i<nn; i++){
+		fprintf(file01, "%d\n", i);
+		fprintf(file02, "%.40f\n", coninit[i]);
+		fprintf(file03, "%.40f\n", con[i]);
+		fprintf(file04, "%.40f\n", flxarr[i]);
 	}
 	fclose(file01);
 	fclose(file02);
@@ -84,6 +109,8 @@ int main(){
 
 
 void hadvppm(HADVPPM_ARGS){
+
+	//printf("con hadvppm:%p\n",con);
     //
     int i;
     double TWO3RDS = 2.0/3.0;
@@ -161,14 +188,18 @@ void hadvppm(HADVPPM_ARGS){
 
     for(i=1; i<nn-1; i++){
 		x = fmax(0,-vel[i-1]*(dt/dx));
-		//printf("[%d]I AM x1: %f\n",i,x);
+#if (DEBUG == 1)
+		printf("[%d]I AM x1: %f\n",i,x);
+#endif
 		fm[i] = x*(cl[i] + 0.5*x*(dc[i] + c6[i]*(1.0 - TWO3RDS*x)));
-        //if (x >= 1)
-			//printf("Courant number %f is bigger than 1", x);
-		x = fmax(0,vel[i]*(dt/dx)); // ToDo: maybe this is not necessary
-		//printf("[%d]I AM x2: %f\n",i,x);
-		//if (x >= 1)
-			//printf("Courant number %f is bigger than 1", x);
+        if (x >= 1)
+			printf("Courant number %f is bigger than 1", x);
+		x = fmax(0,vel[i]*(dt/dx));
+#if (DEBUG == 1)
+		printf("[%d]I AM x2: %f\n",i,x);
+#endif
+		if (x >= 1)
+			printf("Courant number %f is bigger than 1", x);
         fp[i] = x*(cr[i] - 0.5*x*(dc[i] - c6[i]*(1.0 - TWO3RDS*x)));
 	}
 
@@ -183,24 +214,26 @@ void hadvppm(HADVPPM_ARGS){
 	}
 
 	flxarr[0] = (fp[0] - fm[1])*(dx/dt);
+#if (DEBUG == 1)
 	printf("flxarr:%f, fp0:%f, fm1:%f \n", flxarr[0], fp[0], fm[1]);
-
-	//saflux[0] = flxarr[0]*step;
+#endif
 
 	for (i=1; i<nn-1; i++){
-		printf("[%d]", i);
+		//printf("[%d]", i);
 		flxarr[i] = (fp[i] - fm[i+1])*(dx/dt);
 		con[i] = con[i] - mscl[i]*(flxarr[i] - flxarr[i-1])*(dt/dx);
 	}
+	//printf("10 con: %f	mscl: %f	flxarr: %f 	dt/dx:%f\n", con[9],mscl[9], flxarr[9], dt/dx );
 
 	*flux1 = mscl[1]*flxarr[0];
     *flux2 = mscl[nn-2]*flxarr[nn-2];
-    printf("mscl\n");
+
+#if (DEBUG == 1)
+	// test: print output arguments
+	printf("mscl\n");
     for (i = 0; i<nn; i++){
 		printf("%.4f\n", mscl[i]);
     }
-
-    // test: print output arguments
     printf("the Flux1:%f\n", flux1);
     printf("the Flux2:%f\n", flux2);
     printf("flxarr		con		   fm		fp\n");
@@ -212,6 +245,7 @@ void hadvppm(HADVPPM_ARGS){
 		printf("%.4f		%.4f		%.4f		%.4f		%.4f\n", cm[i], cl[i], cr[i], dc[i], c6[i]);
     }
     printf("\n END\n");
+#endif
 }
 
 /* We don't need it .....
