@@ -43,12 +43,29 @@ int main(){
 	}
 
 	//flxarr[nn] = 0.0;
-
-	// save the data
+/*
+	// save the data txt
 	FILE * file01 = fopen("stepi.txt", "w");
 	FILE * file02 = fopen("coninit.txt", "w");
 	FILE * file03 = fopen("conend.txt", "w");
 	FILE * file04 = fopen("flxarr.txt", "w");
+	for (i=0; i<nn; i++){
+		fprintf(file01, "%d\n", i);
+		fprintf(file02, "%.40f\n", coninit[i]);
+		fprintf(file03, "%.40f\n", con[i]);
+		fprintf(file04, "%.40f\n", flxarr[i]);
+	}
+	fclose(file01);
+	fclose(file02);
+	fclose(file03);
+	fclose(file04);
+*/
+
+	// save the data vtk paraview
+	FILE * file01 = fopen("stepi.vtk", "w");
+	FILE * file02 = fopen("coninit.vtk", "w");
+	FILE * file03 = fopen("conend.vtk", "w");
+	FILE * file04 = fopen("flxarr.vtk", "w");
 	for (i=0; i<nn; i++){
 		fprintf(file01, "%d\n", i);
 		fprintf(file02, "%.40f\n", coninit[i]);
