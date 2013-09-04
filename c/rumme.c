@@ -4,7 +4,7 @@
 
 int main(){
 
-	int nn = 5;
+	int nn = 90;
 	int i;
 	double dt = 900;
 	double dx = 36000;
@@ -31,21 +31,24 @@ int main(){
 		//fc1[i] = 0; //even more meaningless
 		//fc2[i] = 0;
 	}
-	//note that hadvppm( &con[0] ) is the same as hadvppm( con )
-	printf("Call hadvppm ... \n");
-    hadvppm(nn, dx, dt, con, vel, mscl, flxarr, &flux1, &flux2);
-	flxarr[nn] = 0.0;
+	for (i=0; i<5000; i++){
+		//printf("[%d] Call hadvppm ... \n",i);
+		//note that hadvppm( &con[0] ) is the same as hadvppm( con )
+		hadvppm(nn, dx, dt, con, vel, mscl, flxarr, &flux1, &flux2);
+	}
+
+	//flxarr[nn] = 0.0;
 
 	// save the data
 	FILE * file01 = fopen("stepi.txt", "w");
 	FILE * file02 = fopen("cinit.txt", "w");
-	FILE * file03 = fopen("con.txt", "w");
+	FILE * file03 = fopen("conend.txt", "w");
 	FILE * file04 = fopen("flxarr.txt", "w");
 	for (i=0; i<nn; i++){
 		fprintf(file01, "%d\n", i);
 		fprintf(file02, "%.4f\n", cinit[i]);
-		fprintf(file03, "%.4f\n",con[i]);
-		fprintf(file04, "%.4f\n",flxarr[i]);
+		fprintf(file03, "%.4f\n", con[i]);
+		fprintf(file04, "%.4f\n", flxarr[i]);
 	}
 	fclose(file01);
 	fclose(file02);
@@ -183,24 +186,24 @@ void hadvppm(HADVPPM_ARGS){
 	}
 
 	flxarr[0] = (fp[0] - fm[1])*(dx/dt);
-	printf("flxarr:%f, fp0:%f, fm1:%f \n", flxarr[0], fp[0], fm[1]);
+	//printf("flxarr:%f, fp0:%f, fm1:%f \n", flxarr[0], fp[0], fm[1]);
 
 	//saflux[0] = flxarr[0]*step;
 
 	for (i=1; i<nn-1; i++){
-		printf("[%d]", i);
+		//printf("[%d]", i);
 		flxarr[i] = (fp[i] - fm[i+1])*(dx/dt);
 		con[i] = con[i] - mscl[i]*(flxarr[i] - flxarr[i-1])*(dt/dx);
 	}
 
 	*flux1 = mscl[1]*flxarr[0];
     *flux2 = mscl[nn-2]*flxarr[nn-2];
+
+	/* test: print output arguments
     printf("mscl\n");
     for (i = 0; i<nn; i++){
 		printf("%.4f\n", mscl[i]);
     }
-
-    // test: print output arguments
     printf("the Flux1:%f\n", flux1);
     printf("the Flux2:%f\n", flux2);
     printf("flxarr		con		   fm		fp\n");
@@ -212,6 +215,7 @@ void hadvppm(HADVPPM_ARGS){
 		printf("%.4f		%.4f		%.4f		%.4f		%.4f\n", cm[i], cl[i], cr[i], dc[i], c6[i]);
     }
     printf("\n END\n");
+    */
 }
 
 /* We don't need it .....
