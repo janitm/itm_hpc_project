@@ -26,6 +26,7 @@
 
 */
 
+//hej Jan, thanks for coming by, this is a github / git demo
 
 void hadvppm(HADVPPM_ARGS){
     //
